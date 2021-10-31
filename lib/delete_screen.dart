@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:http_practic/provider.dart';
+import 'package:http_practic/update_screen.dart';
 import 'package:provider/provider.dart';
 
 class DeleteScreen extends StatefulWidget {
@@ -21,7 +22,9 @@ class _DeleteScreenState extends State<DeleteScreen> {
         .catchError((error) {
       print(error);
     }).then((_) {
-      isLoading = false;
+      setState(() {
+        isLoading = false;
+      });
     });
     super.initState();
   }
@@ -34,24 +37,34 @@ class _DeleteScreenState extends State<DeleteScreen> {
       appBar: AppBar(
         title: Text('Delete Screen'),
       ),
-      body: ListView.builder(
-        itemCount: itemData.item.length,
-        itemBuilder: (ctx, i) => Card(
-          child: ListTile(
-            leading: Text('${itemData.item[i].price}'),
-            title: Text('${itemData.item[i].title}'),
-            trailing: Container(
-              width: 100,
-              child: Row(
-                children: [
-                  IconButton(onPressed: () {}, icon: Icon(Icons.edit)),
-                  IconButton(onPressed: () {}, icon: Icon(Icons.delete)),
-                ],
+      body: isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : ListView.builder(
+              itemCount: itemData.item.length,
+              itemBuilder: (ctx, i) => Card(
+                child: ListTile(
+                  leading: Text('${itemData.item[i].price}'),
+                  title: Text('${itemData.item[i].title}'),
+                  trailing: Container(
+                    width: 100,
+                    child: Row(
+                      children: [
+                        IconButton(
+                            onPressed: () {
+                              Navigator.of(context).pushNamed(
+                                  UpdateScreen.routeName,
+                                  arguments: itemData.item[i].id);
+                            },
+                            icon: Icon(Icons.edit)),
+                        IconButton(onPressed: () {}, icon: Icon(Icons.delete)),
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
-      ),
     );
   }
 }

@@ -21,6 +21,10 @@ class Products with ChangeNotifier {
     return [..._items];
   }
 
+  List<Product> filterItembyID(String id) {
+    return _items.where((element) => element.id == id).toList();
+  }
+
   Future<void> addItem(Product product) async {
     const url =
         'https://http-practic-default-rtdb.asia-southeast1.firebasedatabase.app/products.json';
@@ -48,7 +52,7 @@ class Products with ChangeNotifier {
   Future<void> fatchData() async {
     const url =
         'https://http-practic-default-rtdb.asia-southeast1.firebasedatabase.app/products.json';
-    http.get(Uri.parse(url)).catchError((error) {
+    await http.get(Uri.parse(url)).catchError((error) {
       print(error);
       throw error;
     }).then((response) {
