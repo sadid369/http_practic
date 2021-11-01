@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 
 class Product with ChangeNotifier {
   final String? id;
-  final String title;
+  final String? title;
   final double price;
   Product({
     required this.id,
@@ -21,8 +21,8 @@ class Products with ChangeNotifier {
     return [..._items];
   }
 
-  List<Product> filterItembyID(String id) {
-    return _items.where((element) => element.id == id).toList();
+  Product filterItembyID(String? id) {
+    return _items.firstWhere((element) => element.id == id);
   }
 
   Future<void> addItem(Product product) async {
@@ -49,6 +49,40 @@ class Products with ChangeNotifier {
     });
   }
 
+  Future<void> deleteProduct(String id) async {
+    var url =
+        'https://http-practic-default-rtdb.asia-southeast1.firebasedatabase.app/products/$id.json';
+    final existingProductIndex = _items.indexWhere((prod) => prod.id == id);
+    Product? exixtingProduct = _items[existingProductIndex];
+    await http.delete(Uri.parse(url)).catchError(() {
+      _items.insert(existingProductIndex, exixtingProduct!);
+      notifyListeners();
+    }).then((_) {
+      _items.removeAt(existingProductIndex);
+      notifyListeners();
+      exixtingProduct = null;
+    });
+  }
+
+  Future<void> updateData(String id, Product product) async {
+    var url =
+        'https://http-practic-default-rtdb.asia-southeast1.firebasedatabase.app/products/$id.json';
+    await http
+        .patch(Uri.parse(url),
+            body: json.encode({
+              'title': product.title,
+              'price': product.price,
+            }))
+        .catchError((error) {
+      print(error);
+      throw error;
+    }).then((_) {
+      final prodIndex = _items.indexWhere((prod) => prod.id == id);
+      _items[prodIndex] = product;
+      notifyListeners();
+    });
+  }
+
   Future<void> fatchData() async {
     const url =
         'https://http-practic-default-rtdb.asia-southeast1.firebasedatabase.app/products.json';
@@ -63,6 +97,7 @@ class Products with ChangeNotifier {
             id: itemId, title: itemData['title'], price: itemData['price']));
       });
       _items = _loadedData;
+      notifyListeners();
     });
   }
 }
