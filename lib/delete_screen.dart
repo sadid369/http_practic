@@ -109,8 +109,8 @@ class DisplayTitle extends StatelessWidget {
                       },
                       icon: Icon(Icons.edit)),
                   IconButton(
-                      onPressed: () {
-                        Provider.of<Products>(context, listen: false)
+                      onPressed: () async {
+                        await Provider.of<Products>(context, listen: false)
                             .deleteProduct(itemData.item[i].id!);
                       },
                       icon: Icon(Icons.delete)),

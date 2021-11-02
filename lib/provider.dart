@@ -54,7 +54,7 @@ class Products with ChangeNotifier {
         'https://http-practic-default-rtdb.asia-southeast1.firebasedatabase.app/products/$id.json';
     final existingProductIndex = _items.indexWhere((prod) => prod.id == id);
     Product? exixtingProduct = _items[existingProductIndex];
-    await http.delete(Uri.parse(url)).catchError(() {
+    await http.delete(Uri.parse(url)).catchError((error) {
       _items.insert(existingProductIndex, exixtingProduct!);
       notifyListeners();
     }).then((_) {

@@ -18,6 +18,10 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [ChangeNotifierProvider(create: (ctx) => Products())],
       child: MaterialApp(
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
         routes: {
           PostScreen.routeName: (ctx) => PostScreen(),
           UpdateScreen.routeName: (ctx) => UpdateScreen(),
@@ -25,9 +29,6 @@ class MyApp extends StatelessWidget {
           GetScreen.routeName: (ctx) => GetScreen(),
         },
         title: 'Flutter Demo',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
         home: HomePage(),
       ),
     );
